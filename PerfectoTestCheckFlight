@@ -1,0 +1,61 @@
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import com.perfectomobile.selenium.api.IMobileDevice;
+import com.perfectomobile.selenium.api.IMobileDriver;
+import com.perfectomobile.selenium.api.IMobileWebDriver;
+
+/*
+*
+*   Class Name  : PerfectoTestCheckFlight
+*	Author      : Uzi Eilon <uzie@perfectomobile.com>
+*	Date        : Dec 6th 2013  
+*	
+*	Description :
+*	Mobile web test 
+*	the test go to united.com (on a real device) and check the status of flights number 84
+*	it use a web driver which connected to Perfecto Mobile cloud.
+*   the test is based on a  webDriver test 
+*/
+
+public class PerfectoTestCheckFlight extends PerfectoMobileBasicTest implements Runnable{
+
+	public PerfectoTestCheckFlight(IMobileDriver driver) {
+		super(driver);
+
+ 	}
+
+	
+	@Override
+	public void execTest() {
+ 
+		IMobileDevice device = ((IMobileDriver) _driver).getDevice(_DeviceId);
+
+		device.open();
+		device.home();
+		
+		//device.getScreenText()
+		//device.checkpointText("search");
+		WebDriver webDriver = device.getDOMDriver ("www.united.com");
+	 	webDriver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+		webDriver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
+		//sleep(2000);
+				 	
+		 
+ 		String url = webDriver.getCurrentUrl();
+		String title = webDriver.getTitle();
+		System.out.println("url: " + url + ", title: " + title);
+		
+		WebElement webElement = webDriver.findElement(By.xpath("(//#text)[53]"));
+
+		webElement.click();
+				
+		webElement = webDriver.findElement(By.xpath("(//@id=\"FlightNumber\")[1]"));
+		webElement.sendKeys("84");
+		webDriver.findElement(By.xpath("(//INPUT)[5]")).click();
+		
+	}
+}

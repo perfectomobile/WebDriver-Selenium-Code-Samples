@@ -1,0 +1,80 @@
+
+import java.lang.reflect.Constructor;
+import com.perfectomobile.selenium.*;
+import com.perfectomobile.selenium.api.*;
+
+public class MobileTest {
+	
+	
+	/*
+	*
+	*   Class Name  : MobileTest
+	*	Author      : Uzi Eilon <uzie@perfectomobile.com>
+	*	Date        : Dec 6th 2013  
+	*	
+	*	Description :
+	*	Mobile Executer gets list of test and devices and execute it on the available devices 
+	*	in this example the list arrive form array [] [] 
+	*	The tests run on real devices in Perfecto Mobile cloud 
+		*/
+	  
+	
+	public static void main(String[] args) {
+
+		System.out.println("Script started");
+
+		String host = Constants.PM_CLOUD;
+		String user = Constants.PM_USER;
+		String password = Constants.PM_PASSWORD;
+ 
+		 
+		String[] [] testcase ={
+		//	 {"PerfectoTestCheckFlight","3230D2D238BECF6D"},
+		// 	{"PerfectoTestCheckFlight","4A8203C8DBAB382EE6BB8021B825A736CA734484"},
+			 {"BofaApp_app","4A8203C8DBAB382EE6BB8021B825A736CA734484"},
+		//		 {"usAirways","3230D2D238BECF6D"}
+				
+
+		};
+		
+		ExecutionReporter reporter = new HTMLReporter("Regression Test Tesults");
+ 		try {
+			for(int i =0; i < testcase.length; i++)
+			  {
+				IMobileDriver driver = new MobileDriver(host, user, password);
+				String className = testcase[i][0];
+				String device  = testcase[i][1];
+				
+ 				PerfectoMobileBasicTest test = null;
+				Constructor con = null;
+				 
+				try {
+ 				     con = Class.forName(className).getConstructor(IMobileDriver.class);
+
+				} catch (ClassNotFoundException e) {
+				    e.printStackTrace();
+				}
+ 				try {
+ 					 test = (PerfectoMobileBasicTest)con.newInstance(driver);
+				} catch (InstantiationException e) {
+				    e.printStackTrace();
+				} catch (IllegalAccessException e) {
+				    e.printStackTrace();
+				}
+				
+				//PerfectoMobileBasicTest test = new PerfectoTestCheckFlight(driver);
+				test.setDeviceID(device);
+				Thread t = new Thread(test);
+				t.start();
+				reporter.addLine(className,device,test.getRepName(),test.getStatus());
+				}
+
+ 		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			reporter.closeRep();
+ 		}
+ 	}
+	
+	 
+}

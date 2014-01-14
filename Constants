@@ -1,0 +1,12 @@
+public class Constants
+{
+  /** Project Constants */
+   public static final String REPORT_LIB = "C:\\Test\\";
+   public static final String HTML_REPORT_NAME = "Total.html";
+
+   public static final String PM_USER = "uzie@perfectomobile.com";
+   
+   public static final String PM_PASSWORD = "*************";
+   public static final String PM_CLOUD = "prerelease.perfectomobile.com";
+
+   }

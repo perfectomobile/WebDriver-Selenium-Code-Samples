@@ -1,0 +1,89 @@
+import java.io.File;
+import java.io.InputStream;
+
+import com.perfectomobile.httpclient.MediaType;
+import com.perfectomobile.httpclient.utils.FileUtils;
+import com.perfectomobile.selenium.api.IMobileDriver;
+
+/*
+*
+*   Class Name  : PerfectoMobileBasicTest
+*	Author      : Uzi Eilon <uzie@perfectomobile.com>
+*	Date        : Dec 6th 2013  
+*	
+*	Description :
+Basic abstract perfecto mobile test - Each test need to extend this class and implement the actual test in the PerfectoMobileBasicTest
+*	This basic test handles the driver and the device
+*/
+
+public abstract class PerfectoMobileBasicTest implements Runnable{
+
+	
+	String _DeviceId = null;
+	IMobileDriver _driver;
+ 	boolean _status = true; 
+			
+	@Override
+	public void run() {
+		try
+		{
+			execTest();
+		}catch (Exception e)
+		{
+			_status = false; 
+		}
+		
+		closeTest();
+		getRep(MediaType.HTML);
+
+	}
+	
+	 
+	public PerfectoMobileBasicTest (IMobileDriver driver)
+	{
+		_driver = driver;
+ 	} 
+ 	
+	 
+	 
+	public Boolean getStatus() {
+		return _status  ;
+	}
+	
+	public void setDeviceID(String Device) {
+		_DeviceId= Device;
+
+	}
+	 
+
+	public String  getRepName() {
+		String className = this.getClass().getName();
+		String name = Constants.REPORT_LIB+className+_DeviceId+".HTML";
+		return  name;
+		 
+	}
+	public void getRep(MediaType Type) {
+		InputStream reportStream = ((IMobileDriver) _driver).downloadReport(Type);
+		 
+		if (reportStream != null) {
+			File reportFile = new File(getRepName());
+			FileUtils.write(reportStream, reportFile);
+		}
+	}
+	
+	public  void sleep(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+		}
+	}
+	
+	public  void closeTest( ) {
+		_driver.quit();
+		
+	}
+	
+	
+	public abstract void execTest() throws Exception ;
+
+}

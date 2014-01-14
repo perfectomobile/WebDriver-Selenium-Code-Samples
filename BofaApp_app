@@ -1,0 +1,78 @@
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import com.perfectomobile.selenium.api.IMobileDevice;
+import com.perfectomobile.selenium.api.IMobileDriver;
+import com.perfectomobile.selenium.api.IMobileWebDriver;
+import com.perfectomobile.selenium.params.analyze.text.MobileTextMatchMode;
+
+
+public class BofaApp_app extends PerfectoMobileBasicTest implements Runnable{
+	
+	/*
+	*
+	*   Class Name  : PerfectoMobileBasicTest
+	*	Author      : Uzi Eilon <uzie@perfectomobile.com>
+	*	Date        : Dec 6th 2013  
+	*	
+	*	Description :
+	*	Mobile Native application test 
+	*	The test open the BOFA app (on a real device) and looks for an ATM.
+	*	This test contains IMobileWebDriver (extension to webdriver), which allows the to get native and visual objects on mobile app 
+	* 
+	*/
+	
+	
+	public BofaApp_app(IMobileDriver driver) {
+		super(driver);
+
+ 	}
+
+	
+	@Override
+	public void execTest() {
+ 
+ 
+		IMobileDevice device = ((IMobileDriver) _driver).getDevice(_DeviceId);
+
+		device.open();
+		device.home();
+			 
+		IMobileWebDriver webDriver = _driver.getDevice(_DeviceId).getVisualDriver();
+		webDriver.findElement(By.linkText("Bofa")).click();
+		
+		IMobileWebDriver init = _driver.getDevice(_DeviceId).getVisualDriver();
+		init.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+		init.manageMobile().visualOptions().textMatchOptions().setMode(MobileTextMatchMode.LAST);
+		init.findElement(By.linkText("Account")).click();	
+		
+		webDriver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+		 webDriver.findElement(By.linkText("Save this online"));
+
+		 webDriver.manageMobile().visualOptions().textMatchOptions().setMode(MobileTextMatchMode.LAST);
+		 webDriver.findElement(By.linkText("Locations")).click();
+		 webDriver.findElement(By.linkText("Find Bank of America ATMs"));
+
+		 IMobileWebDriver zip = _driver.getDevice(_DeviceId).getVisualDriver();
+		 zip.manageMobile().visualOptions().textMatchOptions().setMode(MobileTextMatchMode.LAST);
+		 zip.findElement(By.linkText("zip code")).click();
+		 sleep(2000);
+		 zip.findElement(By.linkText("zip code")).click();
+		 sleep(2000);
+
+		 webDriver.manageMobile().visualOptions().textMatchOptions().setMode(MobileTextMatchMode.LAST);
+		 webDriver.manageMobile().visualOptions().ocrOptions().setLevelsLow(120);
+		 webDriver.findElement(By.linkText("Code")).sendKeys("02459");
+		 
+		 zip.findElement(By.linkText("Done")).click();
+		 zip.findElement(By.linkText("Go")).click();
+		 webDriver.findElement(By.linkText("Newton MA"));
+		 
+				
+	} 
+
+
+}

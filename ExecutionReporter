@@ -1,0 +1,24 @@
+
+public interface ExecutionReporter {
+
+	
+	
+	/*
+	*
+	*   Class Name  : ExecutionReporter
+	*	Author      : Uzi Eilon <uzie@perfectomobile.com>
+	*	Date        : Dec 6th 2013  
+	*	
+	*	Description :
+	*	Reporter allows you to build an summary report which aggregate all the executions the results and the link for the specific test report	
+	*	You can find an HTML reporter in this project
+	*	
+	*/
+	  
+	public void reportHeader (String title);
+	
+	public void addLine(String testName,String deviceID,String repID,boolean status);
+	
+	public void closeRep();
+	 
+}
